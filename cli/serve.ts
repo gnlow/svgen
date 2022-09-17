@@ -1,4 +1,6 @@
 import { serve } from "https://deno.land/std@0.156.0/http/server.ts"
+import { renderToString } from "https://esm.sh/react-dom@18.2.0/server"
+import View from "./view.jsx"
 
 export default async function (dir: string) {
     await serve(
@@ -14,10 +16,13 @@ const handler = (dir: string) =>
 async function (req: Request): Promise<Response> {
     const url = new URL(req.url)
 
-    const body = await Deno.readTextFile(dir + url.pathname)
+    const { default: Component } = await import("../" + dir + url.pathname)
+    const body = renderToString(
+        View({Component})
+    )
     return new Response(body, {
         headers: {
-            "Content-Type": "image/svg+xml"
+            "Content-Type": "text/html"
         }
     })
 }
