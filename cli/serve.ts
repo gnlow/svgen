@@ -16,17 +16,19 @@ const handler = (dir: string) =>
 async function (req: Request): Promise<Response> {
     const url = new URL(req.url)
 
-    const { default: Component } = await import(
-        getBaseDir() + "/" + dir + url.pathname
-    )
-    const body = renderToString(
-        View({Component})
-    )
-    return new Response(body, {
-        headers: {
-            "Content-Type": "text/html"
-        }
-    })
+    if (req.url.endsWith(".jsx")) {
+        const { default: Component } = await import(
+            getBaseDir() + "/" + dir + url.pathname + "?" + Math.random()
+        )
+        const body = renderToString(
+            View({Component})
+        )
+        return new Response(body, {
+            headers: {
+                "Content-Type": "text/html"
+            }
+        })    
+    }
 }
 
 function getBaseDir() {
