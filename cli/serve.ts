@@ -16,7 +16,9 @@ const handler = (dir: string) =>
 async function (req: Request): Promise<Response> {
     const url = new URL(req.url)
 
-    const { default: Component } = await import("../" + dir + url.pathname)
+    const { default: Component } = await import(
+        getBaseDir() + "/" + dir + url.pathname
+    )
     const body = renderToString(
         View({Component})
     )
@@ -25,4 +27,8 @@ async function (req: Request): Promise<Response> {
             "Content-Type": "text/html"
         }
     })
+}
+
+function getBaseDir() {
+    return Deno.cwd().replace("C:\\", "/")
 }
