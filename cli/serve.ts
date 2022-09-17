@@ -7,7 +7,7 @@ export default async function (dir: string) {
         handler(dir), 
         {
             onListen({ port, hostname }) {
-                console.log(`Server started at http://${hostname}:${port}`)
+                console.log(`svgen: Server started at http://${hostname}:${port}`)
             }
         })
 }
@@ -29,6 +29,7 @@ async function (req: Request): Promise<Response> {
             }
         })    
     }
+    return new Response("404")
 }
 
 function getBaseDir() {

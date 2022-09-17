@@ -1,6 +1,5 @@
 export default ({Component}) => {
-    return <div>
-        Hello
+    return <div style={{border: "2px solid #aaa"}}>
         <Component/>
     </div>
 }
