@@ -16,22 +16,22 @@ const handler = (dir: string) =>
 async function (req: Request): Promise<Response> {
     const url = new URL(req.url)
 
-    if (req.url.endsWith(".jsx")) {
+    if (req.url.endsWith(".jsx") && !req.headers.get("user-agent")?.startsWith("Deno")) {
         const { default: Component } = await import(
-            getBaseDir() + "/" + dir + url.pathname + "?" + Math.random()
+            "http://localhost:8000" + url.pathname + "?" + Math.random()
         )
         const body = renderToString(
             View({Component})
         )
         return new Response(body, {
             headers: {
-                "Content-Type": "text/html"
+                "Content-Type": "text/html",
+                "Cache-Control": "no-cache, no-store, must-revalidate"
             }
         })    
+    } else {
+        const body = await Deno.readFile(dir + url.pathname)
+        
+        return new Response(body)
     }
-    return new Response("404")
-}
-
-function getBaseDir() {
-    return Deno.cwd().replace("C:\\", "/")
 }
